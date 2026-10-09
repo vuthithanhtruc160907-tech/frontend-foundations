@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programming Language</title>
+  <style>
+@keyframes blink{0%{border:2px solid red;box-shadow:0 0 5px red}100%{border:2px solid transparent}}
+.blink-border{animation:blink 0.8s infinite alternate}
+</style>
+<div style="background:#0080ff;padding:16px;width:340px;color:white;margin:10px auto">
+  <div>Số tiền: <input type="number" id="amt"> (VNĐ)</div>
+  <div style="margin:8px 0">Đơn vị: <select id="curr"><option value="USD">USD</option><option value="EUR">EUR</option><option value="AUD">AUD</option></select></div>
+  <div id="resCurr" style="color:#800000;font-weight:bold;margin:10px 0"></div>
+  <button onclick="doiTien()" style="background:#0000cc;color:white;padding:4px 15px">Đổi</button>
+</div>
+<script>
+function doiTien(){
+  const inp=document.getElementById('amt'), curr=document.getElementById('curr').value, res=document.getElementById('resCurr');
+  if(!inp.value.trim()||isNaN(inp.value)||Number(inp.value)<=0){inp.classList.add('blink-border');inp.focus();res.textContent="";return;}
+  inp.classList.remove('blink-border');
+  const vnd=parseFloat(inp.value); let r=22000;
+  if(curr==='EUR') r=26000; else if(curr==='AUD') r=16000;
+  res.textContent=`${vnd}VNĐ = ${(vnd/r).toFixed(2)}${curr}`;
+}
+document.getElementById('amt').addEventListener('input',function(){this.classList.remove('blink-border')});
+</script>
+
+</body>
+</html>
