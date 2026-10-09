@@ -1,30 +1,153 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Programming Language</title>
-  <style>
-@keyframes blink{0%{border:2px solid red;box-shadow:0 0 5px red}100%{border:2px solid transparent}}
-.blink-border{animation:blink 0.8s infinite alternate}
-</style>
-<div style="background:#0080ff;padding:16px;width:340px;color:white;margin:10px auto">
-  <div>Số tiền: <input type="number" id="amt"> (VNĐ)</div>
-  <div style="margin:8px 0">Đơn vị: <select id="curr"><option value="USD">USD</option><option value="EUR">EUR</option><option value="AUD">AUD</option></select></div>
-  <div id="resCurr" style="color:#800000;font-weight:bold;margin:10px 0"></div>
-  <button onclick="doiTien()" style="background:#0000cc;color:white;padding:4px 15px">Đổi</button>
-</div>
-<script>
-function doiTien(){
-  const inp=document.getElementById('amt'), curr=document.getElementById('curr').value, res=document.getElementById('resCurr');
-  if(!inp.value.trim()||isNaN(inp.value)||Number(inp.value)<=0){inp.classList.add('blink-border');inp.focus();res.textContent="";return;}
-  inp.classList.remove('blink-border');
-  const vnd=parseFloat(inp.value); let r=22000;
-  if(curr==='EUR') r=26000; else if(curr==='AUD') r=16000;
-  res.textContent=`${vnd}VNĐ = ${(vnd/r).toFixed(2)}${curr}`;
-}
-document.getElementById('amt').addEventListener('input',function(){this.classList.remove('blink-border')});
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển Đổi Tiền Tệ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 30px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.25);
+            width: 100%;
+            max-width: 380px;
+        }
+
+        h2 {
+            color: #475569;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 1.4rem;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #334155;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #4f46e5;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 14px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            border-left: 4px solid #6366f1;
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>💱 Quy Đổi Tiền Tệ</h2>
+        
+        <div class="input-group">
+            <label for="amount">Số tiền (VNĐ):</label>
+            <input type="number" id="amount" placeholder="Nhập số tiền..." value="456">
+        </div>
+
+        <div class="input-group">
+            <label for="currency">Đổi sang đơn vị:</label>
+            <select id="currency">
+                <option value="USD">USD - Đô la Mỹ</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="JPY">JPY - Yên Nhật</option>
+            </select>
+        </div>
+
+        <button onclick="convertMoney()">Đổi Tiền</button>
+
+        <div class="result" id="resultBox">
+            456 VNĐ = 0.02 USD
+        </div>
+    </div>
+
+    <script>
+        function convertMoney() {
+            let amount = document.getElementById('amount').value;
+            let currency = document.getElementById('currency').value;
+            let result = 0;
+
+            if (!amount || amount <= 0) {
+                document.getElementById('resultBox').innerText = "Vui lòng nhập số tiền hợp lệ!";
+                return;
+            }
+
+            if (currency === 'USD') {
+                result = (amount / 25000).toFixed(2);
+            } else if (currency === 'EUR') {
+                result = (amount / 27000).toFixed(2);
+            } else if (currency === 'JPY') {
+                result = (amount / 160).toFixed(2);
+            }
+
+            document.getElementById('resultBox').innerText = `${amount} VNĐ = ${result} ${currency}`;
+        }
+    </script>
 
 </body>
 </html>
